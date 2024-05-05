@@ -12,7 +12,7 @@ const Content = () => {
         <Box>
             <Grid container spacing={1}>
                 <Grid item xs={6}>
-                    <StyledSkinUserManagerList>
+                    <StyledSkinUserManagerList >
                         <ManageAccountsIcon sx={{ fontSize: "2.5rem" }} />
                         <Typography variant="caption">Student</Typography>
                         <Typography variant="caption" marginRight={1} fontSize={"0.8rem"}>120</Typography>

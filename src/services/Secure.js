@@ -24,10 +24,8 @@ function Secure(props) {
         })
         .catch((error) => {
             if (error.response) {
-                //server responded but there error in request
                 console.log(error.response);
             } else if (error.request) {
-                //network or server error
             } else {
                 console.log(error);
             }

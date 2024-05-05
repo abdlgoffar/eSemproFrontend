@@ -42,7 +42,7 @@ function App() {
           <Route path="/students/seminar" element={<Secure><StudentSeminar /></Secure>} />
           <Route path="/head-study-programs/main" element={<Secure><HeadStudyProgramMain /></Secure>} />
           <Route path="/head-study-programs/proposal" element={<Secure><HeadStudyProgramProposal /></Secure>} />
-          <Route path="/head-study-programs/proposal/detail" element={<Secure><HeadStudyProgramProposalDetail /></Secure>} />
+          <Route path="/head-study-programs/proposal/:id" element={<Secure><HeadStudyProgramProposalDetail /></Secure>} />
           <Route path="/examiners/main" element={<Secure><ExaminerMain /></Secure>} />
           <Route path="/examiners/proposal" element={<Secure><ExaminerProposal /></Secure>} />
           <Route path="/examiners/proposal/detail" element={<Secure><ExaminerProposalDetail /></Secure>} />

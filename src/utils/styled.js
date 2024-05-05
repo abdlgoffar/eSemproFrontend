@@ -53,7 +53,7 @@ export const StyledTableSkin = styled("div")(({ theme }) => ({
     overflow: "scroll",
     display: "flex",
     justifyContent: "center",
-    height: "330px"
+    height: "230px"
   }
 }));
 
@@ -137,8 +137,7 @@ export const StyledSkinSignatureBox = styled("div")(({ theme }) => ({
     alignItems: "end",
     flexDirection: "row",
     boxSizing: "border-box",
-
-
+    height: "100px"
   }
 }))
 
@@ -152,9 +151,7 @@ export const StyledSkinSignatureImg = styled("div")(({ theme }) => ({
 
   [theme.breakpoints.up("lg")]: {
     width: "50%",
-    height: "100%",
-    background: "blue"
-
+    height: "100%"
   }
 }))
 

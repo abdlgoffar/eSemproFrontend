@@ -7,12 +7,14 @@ import { StyledBtnFile, StyledForm, StyledTableSkin, StyledTabsSkin } from "../u
 
 import PropTypes from 'prop-types';
 import SettingsIcon from '@mui/icons-material/Settings';
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 
 
 
 import { Visibility, VisibilityOff } from "@mui/icons-material";
+import axios from "axios";
+import { fetchUsersByRole } from "../services/api";
 
 function createData(no, name, address, phone) {
     return { no, name, address, phone };
@@ -31,6 +33,8 @@ const rows = [
 // tabs component method required
 function CustomTabPanel(props) {
     const { children, value, index, ...other } = props;
+
+
 
     return (
         <div
@@ -64,6 +68,7 @@ function a11yProps(index) {
 }
 
 const Content = () => {
+
     // css
     const style = {
         position: 'absolute',
@@ -87,10 +92,15 @@ const Content = () => {
 
     // tabs component variable
     const [value, setValue] = useState(0);
+    const labels = ["students", "supervisors", "coordinators", "examiners", "head-study-programs"];
 
     const handleChange = (event, newValue) => {
         setValue(newValue);
+        //console.log('Selected tab label:', labels[newValue]);
+        setRole(labels[newValue]);
     };
+
+
 
     // password input variable
 
@@ -108,6 +118,23 @@ const Content = () => {
     const handleOpen2 = () => setOpen2(true);
     const handleClose2 = () => setOpen2(false);
 
+    const [role, setRole] = useState("students");
+    const [users, setUsers] = useState([]);
+
+    useEffect(() => {
+        const controller = new AbortController();
+
+        const loadUsers = async () => {
+            const usersData = await fetchUsersByRole(role, controller.signal);
+            setUsers(usersData);
+        };
+
+        loadUsers();
+
+        // Cleanup function to cancel ongoing requests when the component unmounts
+        return () => controller.abort();
+    }, [role]);
+
 
     return (
         <Box>
@@ -116,7 +143,6 @@ const Content = () => {
                     <Table aria-label="simple table">
                         <TableHead sx={{ backgroundColor: "#cfd8dc" }}>
                             <TableRow>
-                                <TableCell>NO.</TableCell>
                                 <TableCell width={100} align="center">Name</TableCell>
                                 <TableCell align="center">Address</TableCell>
                                 <TableCell align="center">Phone</TableCell>
@@ -124,28 +150,85 @@ const Content = () => {
                             </TableRow>
                         </TableHead>
                         <TableBody sx={{ backgroundColor: "#eceff1" }}>
-                            {rows.map((row) => (
+                            {users.map((v, i) => (
                                 <TableRow
-                                    key={row.no}
+                                    key={i}
                                     sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                                 >
-                                    <TableCell sx={{ fontSize: "0.8rem" }} component="th" scope="row">
-                                        {row.no}
-                                    </TableCell>
-                                    <TableCell width={100} sx={{ fontSize: "0.8rem" }} align="left">{row.name}</TableCell>
-                                    <TableCell sx={{ fontSize: "0.8rem" }} align="left">{row.address}</TableCell>
-                                    <TableCell sx={{ fontSize: "0.8rem" }} align="left">{row.phone}</TableCell>
-                                    <TableCell sx={{ fontSize: "0.8rem" }} align="left">
-                                        <IconButton aria-describedby={id} size="small" type="button" onClick={handleClick}>
-                                            <SettingsIcon fontSize="inherit" />
-                                        </IconButton>
-                                        <Popper id={id} open={open} anchorEl={anchorEl}>
-                                            <Box sx={{ border: "0.5px solid #CFD8DC", p: 1, bgcolor: 'background.paper' }}>
-                                                <Typography sx={{ cursor: "pointer" }} color={"green"} fontSize={"0.7rem"} onClick={handleOpen2}>Update</Typography>
-                                                <Typography sx={{ cursor: "pointer" }} color={"red"} fontSize={"0.7rem"}>Delete</Typography>
-                                            </Box>
-                                        </Popper>
-                                    </TableCell>
+                                    {v.student !== null && <><TableCell width={100} sx={{ fontSize: "0.8rem" }} align="left">{v.student.name}</TableCell>
+                                        <TableCell sx={{ fontSize: "0.8rem" }} align="left">{v.student.address}</TableCell>
+                                        <TableCell sx={{ fontSize: "0.8rem" }} align="left">{v.student.phone}</TableCell>
+                                        <TableCell sx={{ fontSize: "0.8rem" }} align="left">
+                                            <IconButton aria-describedby={id} size="small" type="button" onClick={handleClick}>
+                                                <SettingsIcon fontSize="inherit" />
+                                            </IconButton>
+                                            <Popper id={id} open={open} anchorEl={anchorEl}>
+                                                <Box sx={{ border: "0.5px solid #CFD8DC", p: 1, bgcolor: 'background.paper' }}>
+                                                    <Typography sx={{ cursor: "pointer" }} color={"green"} fontSize={"0.7rem"} onClick={handleOpen2}>Update</Typography>
+                                                    <Typography sx={{ cursor: "pointer" }} color={"red"} fontSize={"0.7rem"}>Delete</Typography>
+                                                </Box>
+                                            </Popper>
+                                        </TableCell></>}
+
+                                    {v.examiner !== null && <><TableCell width={100} sx={{ fontSize: "0.8rem" }} align="left">{v.examiner.name}</TableCell>
+                                        <TableCell sx={{ fontSize: "0.8rem" }} align="left">{v.examiner.address}</TableCell>
+                                        <TableCell sx={{ fontSize: "0.8rem" }} align="left">{v.examiner.phone}</TableCell>
+                                        <TableCell sx={{ fontSize: "0.8rem" }} align="left">
+                                            <IconButton aria-describedby={id} size="small" type="button" onClick={handleClick}>
+                                                <SettingsIcon fontSize="inherit" />
+                                            </IconButton>
+                                            <Popper id={id} open={open} anchorEl={anchorEl}>
+                                                <Box sx={{ border: "0.5px solid #CFD8DC", p: 1, bgcolor: 'background.paper' }}>
+                                                    <Typography sx={{ cursor: "pointer" }} color={"green"} fontSize={"0.7rem"} onClick={handleOpen2}>Update</Typography>
+                                                    <Typography sx={{ cursor: "pointer" }} color={"red"} fontSize={"0.7rem"}>Delete</Typography>
+                                                </Box>
+                                            </Popper>
+                                        </TableCell></>}
+
+                                    {v.supervisor !== null && <><TableCell width={100} sx={{ fontSize: "0.8rem" }} align="left">{v.supervisor.name}</TableCell>
+                                        <TableCell sx={{ fontSize: "0.8rem" }} align="left">{v.supervisor.address}</TableCell>
+                                        <TableCell sx={{ fontSize: "0.8rem" }} align="left">{v.supervisor.phone}</TableCell>
+                                        <TableCell sx={{ fontSize: "0.8rem" }} align="left">
+                                            <IconButton aria-describedby={id} size="small" type="button" onClick={handleClick}>
+                                                <SettingsIcon fontSize="inherit" />
+                                            </IconButton>
+                                            <Popper id={id} open={open} anchorEl={anchorEl}>
+                                                <Box sx={{ border: "0.5px solid #CFD8DC", p: 1, bgcolor: 'background.paper' }}>
+                                                    <Typography sx={{ cursor: "pointer" }} color={"green"} fontSize={"0.7rem"} onClick={handleOpen2}>Update</Typography>
+                                                    <Typography sx={{ cursor: "pointer" }} color={"red"} fontSize={"0.7rem"}>Delete</Typography>
+                                                </Box>
+                                            </Popper>
+                                        </TableCell></>}
+
+                                    {v.coordinator !== null && <><TableCell width={100} sx={{ fontSize: "0.8rem" }} align="left">{v.coordinator.name}</TableCell>
+                                        <TableCell sx={{ fontSize: "0.8rem" }} align="left">{v.coordinator.address}</TableCell>
+                                        <TableCell sx={{ fontSize: "0.8rem" }} align="left">{v.coordinator.phone}</TableCell>
+                                        <TableCell sx={{ fontSize: "0.8rem" }} align="left">
+                                            <IconButton aria-describedby={id} size="small" type="button" onClick={handleClick}>
+                                                <SettingsIcon fontSize="inherit" />
+                                            </IconButton>
+                                            <Popper id={id} open={open} anchorEl={anchorEl}>
+                                                <Box sx={{ border: "0.5px solid #CFD8DC", p: 1, bgcolor: 'background.paper' }}>
+                                                    <Typography sx={{ cursor: "pointer" }} color={"green"} fontSize={"0.7rem"} onClick={handleOpen2}>Update</Typography>
+                                                    <Typography sx={{ cursor: "pointer" }} color={"red"} fontSize={"0.7rem"}>Delete</Typography>
+                                                </Box>
+                                            </Popper>
+                                        </TableCell></>}
+
+                                    {v.head_study_program !== null && <><TableCell width={100} sx={{ fontSize: "0.8rem" }} align="left">{v.head_study_program.name}</TableCell>
+                                        <TableCell sx={{ fontSize: "0.8rem" }} align="left">{v.head_study_program.address}</TableCell>
+                                        <TableCell sx={{ fontSize: "0.8rem" }} align="left">{v.head_study_program.phone}</TableCell>
+                                        <TableCell sx={{ fontSize: "0.8rem" }} align="left">
+                                            <IconButton aria-describedby={id} size="small" type="button" onClick={handleClick}>
+                                                <SettingsIcon fontSize="inherit" />
+                                            </IconButton>
+                                            <Popper id={id} open={open} anchorEl={anchorEl}>
+                                                <Box sx={{ border: "0.5px solid #CFD8DC", p: 1, bgcolor: 'background.paper' }}>
+                                                    <Typography sx={{ cursor: "pointer" }} color={"green"} fontSize={"0.7rem"} onClick={handleOpen2}>Update</Typography>
+                                                    <Typography sx={{ cursor: "pointer" }} color={"red"} fontSize={"0.7rem"}>Delete</Typography>
+                                                </Box>
+                                            </Popper>
+                                        </TableCell></>}
                                 </TableRow>
                             ))}
                         </TableBody>
@@ -156,11 +239,9 @@ const Content = () => {
 
             <StyledTabsSkin sx={{ marginTop: 2 }}>
                 <Tabs value={value} onChange={handleChange} aria-label="basic tabs example" variant="scrollable" scrollButtons>
-                    <Tab sx={{ fontSize: "0.8rem" }} label="Student" {...a11yProps(0)} />
-                    <Tab sx={{ fontSize: "0.8rem" }} label="Supervisor" {...a11yProps(1)} />
-                    <Tab sx={{ fontSize: "0.8rem" }} label="Coordinator" {...a11yProps(2)} />
-                    <Tab sx={{ fontSize: "0.8rem" }} label="Examiner" {...a11yProps(3)} />
-                    <Tab sx={{ fontSize: "0.8rem" }} label="Head Study Program" {...a11yProps(4)} />
+                    {labels.map((label, index) => (
+                        <Tab key={index} sx={{ fontSize: "0.8rem" }} label={label} {...a11yProps(index)} />
+                    ))}
                 </Tabs>
             </StyledTabsSkin>
             <CustomTabPanel value={value} index={0} >
@@ -199,7 +280,7 @@ const Content = () => {
                     <Input aria-describedby="nrp-helper-text" sx={{ minWidth: "100%" }} />
                     <FormHelperText id="nrp-helper-text">Please type nrp</FormHelperText>
 
-                    <Typography marginTop={3} marginLeft={2} sx={{ fontSize: "0.8rem" }} variant="body2">Prodi</Typography>
+                    <Typography marginTop={3} marginLeft={2} sx={{ fontSize: "0.8rem" }} variant="body2">Kaprodi</Typography>
                     <Select
                         labelId="demo-simple-select-label"
                         id="demo-simple-select"
@@ -314,7 +395,7 @@ const Content = () => {
                 </StyledForm>
             </CustomTabPanel>
             <CustomTabPanel value={value} index={3}>
-                <fStyledFormorm>
+                <StyledForm>
                     <Input aria-describedby="username-helper-text" sx={{ minWidth: "100%" }} />
                     <FormHelperText id="username-helper-text">Please type username</FormHelperText>
 
@@ -356,7 +437,7 @@ const Content = () => {
                         CONFIRMATION
                         <StyledBtnFile type="submit" />
                     </Button>
-                </fStyledFormorm>
+                </StyledForm>
             </CustomTabPanel>
             <CustomTabPanel value={value} index={4}>
                 <StyledForm>

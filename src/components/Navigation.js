@@ -62,8 +62,8 @@ const NavigationProfil = () => {
       <ItemNav elevation={0} sx={{ bgcolor: "#b3e5fc" }}>
         <Avatar
           sx={{
-            width: 55,
-            height: 55,
+            width: 37,
+            height: 37,
             boxShadow: "rgba(9, 30, 66, 0.25) 0px 4px 8px -2px, rgba(9, 30, 66, 0.08) 0px 0px 0px 1px"
           }}
           alt="Remy Sharp"
@@ -86,9 +86,7 @@ const Navigation = ({ data }) => {
       elevation={0}
       sx={{
         padding: "1px 0 1px 0",
-        bgcolor: "#b3e5fc",
-        paddingTop: 1,
-        paddingBottom: 1
+        bgcolor: "#b3e5fc"
       }}
     >
       <StyledToolbar>

@@ -28,22 +28,30 @@ const Login = () => {
             "password": password
         }
 
-        axios.post("http://127.0.0.1:8000/api/users/login", data, { headers: { "Content-Type": "application/json" } })
-            .then((response) => {
-                localStorage.setItem("Authentication-token", response.data.data.token)
+        async function loginUser(data) {
+            try {
+                const response = await axios.post("http://127.0.0.1:8000/api/users/login", data, {
+                    headers: { "Content-Type": "application/json" }
+                });
+                localStorage.setItem("Authentication-token", response.data.data.token);
                 window.location.href = `/${response.data.data.role}/main`;
-            })
-            .catch((error) => {
+            } catch (error) {
                 if (error.response) {
-                    //server responded but there error in request
+                    // Server responded but there was an error in the request
                     setErrors(true);
                     setErrorMessages(error.response.data.errors.messages);
                 } else if (error.request) {
-                    //network or server error
+                    // The request was made but no response was received (network or server error)
+                    console.log('The request was made but no response was received');
                 } else {
-                    console.log(error);
+                    // Something happened in setting up the request that triggered an Error
+                    console.log('Error', error.message);
                 }
-            });
+            }
+        }
+
+        loginUser(data);
+
 
     }
 
@@ -71,7 +79,7 @@ const Login = () => {
                         <Typography variant="h5">Selamat Datang</Typography>
                         <Typography variant="subtitle1" marginBottom={4}>Selamat datang di aplikasi pengelolaan seminar proposal Sekolah Tinggi Informatika Malang, STIKI Malang.</Typography>
                         <StyledForm onSubmit={loginSubmition} method="POST">
-                            <Input onChange={(e) => setUsername(e.target.value)} value={username} type="email" aria-describedby="username-helper-text" sx={{ minWidth: "100%" }} />
+                            <Input onChange={(e) => setUsername(e.target.value)} value={username} type="text" aria-describedby="username-helper-text" sx={{ minWidth: "100%" }} />
                             <FormHelperText id="username-helper-text">Please type your username</FormHelperText>
                             <Input
                                 onChange={(e) => setPassword(e.target.value)}
